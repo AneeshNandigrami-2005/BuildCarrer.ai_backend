@@ -1,4 +1,9 @@
 
+"""
+Job Management URLs
+BuildCareer.ai
+"""
+
 from django.urls import path
 
 from .views import (
@@ -8,6 +13,7 @@ from .views import (
     SavedJobListCreateView,
     SavedJobDeleteView,
 )
+
 from .recruiter_views import (
     JobApplicationDetailView,
     JobApplicationListCreateView,
@@ -16,20 +22,61 @@ from .recruiter_views import (
     RecruiterDashboardSummaryView,
     RecruiterInterviewDetailView,
     RecruiterInterviewListCreateView,
+    RecruiterDashboardSummaryView,
 )
+
 
 urlpatterns = [
     # Job APIs
     path("", JobListCreateView.as_view(), name="job-list-create"),
-    path("dashboard/", RecruiterDashboardSummaryView.as_view(), name="recruiter-dashboard"),
-    path("applications/", JobApplicationListCreateView.as_view(), name="job-applications"),
-    path("applications/<str:pk>/withdraw/", JobApplicationWithdrawView.as_view(), name="job-application-withdraw"),
-    path("applications/<str:pk>/", JobApplicationDetailView.as_view(), name="job-application-detail"),
-    path("interviews/", RecruiterInterviewListCreateView.as_view(), name="recruiter-interviews"),
-    path("interviews/<str:pk>/", RecruiterInterviewDetailView.as_view(), name="recruiter-interview-detail"),
-    path("assessments/", RecruiterAssessmentListCreateView.as_view(), name="recruiter-assessments"),
 
-    # Saved Job APIs - keep these before the generic job detail route
+    # Recruiter Dashboard
+    path(
+        "dashboard/",
+        RecruiterDashboardSummaryView.as_view(),
+        name="recruiter-dashboard"
+    ),
+
+    # Job Applications
+    path(
+        "applications/",
+        JobApplicationListCreateView.as_view(),
+        name="job-applications"
+    ),
+
+    path(
+        "applications/<str:pk>/withdraw/",
+        JobApplicationWithdrawView.as_view(),
+        name="job-application-withdraw"
+    ),
+
+    path(
+        "applications/<str:pk>/",
+        JobApplicationDetailView.as_view(),
+        name="job-application-detail"
+    ),
+
+    # Recruiter Interviews
+    path(
+        "interviews/",
+        RecruiterInterviewListCreateView.as_view(),
+        name="recruiter-interviews"
+    ),
+
+    path(
+        "interviews/<str:pk>/",
+        RecruiterInterviewDetailView.as_view(),
+        name="recruiter-interview-detail"
+    ),
+
+    # Recruiter Assessments
+    path(
+        "assessments/",
+        RecruiterAssessmentListCreateView.as_view(),
+        name="recruiter-assessments"
+    ),
+
+    # Saved Jobs
     path(
         "saved/",
         SavedJobListCreateView.as_view(),
@@ -42,13 +89,14 @@ urlpatterns = [
         name="saved-job-delete"
     ),
 
-    # Job status and detail APIs
+    # Job Status
     path(
         "<str:pk>/status/",
         JobStatusUpdateView.as_view(),
         name="job-status-update"
     ),
 
+    # Job Details
     path(
         "<str:pk>/",
         JobDetailView.as_view(),

@@ -1,13 +1,27 @@
 
+"""
+Main URL configuration for BuildCareer.ai
+"""
+
 from django.contrib import admin
 from django.urls import path, include
 
+
 urlpatterns = [
+    # Django Admin
     path("admin/", admin.site.urls),
 
     # Authentication APIs
-    path("api/auth/", include("accounts.urls")),
+    # /auth/register/
+    # /auth/login/
+    # /auth/google/
+    # /auth/profile/
+    path("auth/", include("accounts.urls")),
 
     # Job Management APIs
-    path("api/jobs/", include("jobs.urls")),
+    # /jobs/
+    # /jobs/dashboard/
+    # /jobs/applications/
+    # /jobs/saved/
+    path("jobs/", include("jobs.urls")),
 ]
