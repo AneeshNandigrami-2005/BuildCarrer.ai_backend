@@ -35,7 +35,7 @@ ALLOWED_HOSTS = [
     host.strip()
     for host in os.getenv(
         "ALLOWED_HOSTS",
-        "localhost,127.0.0.1"
+        "localhost,127.0.0.1,buildcarrer-ai-backend.onrender.com"
     ).split(",")
     if host.strip()
 ]
@@ -245,7 +245,7 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER or "BuildCareer.ai"
 
 FRONTEND_URL = os.getenv(
     "FRONTEND_URL",
-    "http://localhost:5173"
+    "https://build-carrer-ai-frontend.vercel.app"
 )
 
 
@@ -261,12 +261,30 @@ GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
 # =====================================================
 
 CORS_ALLOWED_ORIGINS = [
-    origin.strip()
-    for origin in os.getenv(
-        "CORS_ALLOWED_ORIGINS",
-        "http://localhost:5173,http://127.0.0.1:5173"
-    ).split(",")
-    if origin.strip()
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "https://build-carrer-ai-frontend.vercel.app",
+]
+
+CORS_ALLOW_CREDENTIALS = True
+
+CORS_ALLOW_METHODS = [
+    "DELETE",
+    "GET",
+    "OPTIONS",
+    "PATCH",
+    "POST",
+    "PUT",
+]
+
+CORS_ALLOW_HEADERS = [
+    "accept",
+    "authorization",
+    "content-type",
+    "origin",
+    "user-agent",
+    "x-csrftoken",
+    "x-requested-with",
 ]
 
 
@@ -275,12 +293,9 @@ CORS_ALLOWED_ORIGINS = [
 # =====================================================
 
 CSRF_TRUSTED_ORIGINS = [
-    origin.strip()
-    for origin in os.getenv(
-        "CSRF_TRUSTED_ORIGINS",
-        "http://localhost:5173,http://127.0.0.1:5173"
-    ).split(",")
-    if origin.strip()
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "https://build-carrer-ai-frontend.vercel.app",
 ]
 
 
