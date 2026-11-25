@@ -1,30 +1,43 @@
 
 """
 Django settings for config project.
+BuildCareer.ai Backend
 """
 
 from pathlib import Path
 import os
 from dotenv import load_dotenv
 
+
+# =====================================================
+# BASE DIRECTORY & ENVIRONMENT
+# =====================================================
+
 BASE_DIR = Path(__file__).resolve().parent.parent
+
 load_dotenv(BASE_DIR / ".env")
 
 
 # =====================================================
-# SECURITY
+# SECURITY CONFIGURATION
 # =====================================================
 
-SECRET_KEY = os.getenv(
-    "DJANGO_SECRET_KEY",
-    "django-insecure-development-only-change-this-key"
-)
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 
-DEBUG = os.getenv("DEBUG", "True").lower() == "true"
+if not SECRET_KEY:
+    raise ValueError(
+        "DJANGO_SECRET_KEY is missing from environment variables."
+    )
+
+DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 
 ALLOWED_HOSTS = [
-    "localhost",
-    "127.0.0.1",
+    host.strip()
+    for host in os.getenv(
+        "ALLOWED_HOSTS",
+        "localhost,127.0.0.1"
+    ).split(",")
+    if host.strip()
 ]
 
 
@@ -34,17 +47,23 @@ ALLOWED_HOSTS = [
 
 INSTALLED_APPS = [
     "django_mongodb_backend",
+
     "accounts",
     "jobs",
+
     "rest_framework",
+
     "config.apps.MongoAdminConfig",
     "config.apps.MongoAuthConfig",
     "config.apps.MongoContentTypesConfig",
+
     "corsheaders",
+
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
 ]
+
 
 AUTH_USER_MODEL = "accounts.User"
 
@@ -66,12 +85,21 @@ REST_FRAMEWORK = {
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
+
     "django.middleware.security.SecurityMiddleware",
+
+    "whitenoise.middleware.WhiteNoiseMiddleware",
+
     "django.contrib.sessions.middleware.SessionMiddleware",
+
     "django.middleware.common.CommonMiddleware",
+
     "django.middleware.csrf.CsrfViewMiddleware",
+
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+
     "django.contrib.messages.middleware.MessageMiddleware",
+
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
@@ -82,6 +110,8 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "config.urls"
 
+WSGI_APPLICATION = "config.wsgi.application"
+
 
 # =====================================================
 # TEMPLATES
@@ -90,20 +120,22 @@ ROOT_URLCONF = "config.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
+
         "DIRS": [],
+
         "APP_DIRS": True,
+
         "OPTIONS": {
             "context_processors": [
                 "django.template.context_processors.request",
+
                 "django.contrib.auth.context_processors.auth",
+
                 "django.contrib.messages.context_processors.messages",
             ],
         },
     },
 ]
-
-
-WSGI_APPLICATION = "config.wsgi.application"
 
 
 # =====================================================
@@ -113,14 +145,23 @@ WSGI_APPLICATION = "config.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django_mongodb_backend",
+
         "HOST": os.getenv("MONGO_URI"),
+
         "NAME": os.getenv("MONGO_DB_NAME"),
     }
 }
 
+
+# =====================================================
+# MONGODB MIGRATIONS
+# =====================================================
+
 MIGRATION_MODULES = {
     "admin": "mongo_migrations.admin",
+
     "auth": "mongo_migrations.auth",
+
     "contenttypes": "mongo_migrations.contenttypes",
 }
 
@@ -159,11 +200,15 @@ USE_TZ = True
 
 
 # =====================================================
-# STATIC FILES
+# STATIC & MEDIA FILES
 # =====================================================
 
-STATIC_URL = "static/"
+STATIC_URL = "/static/"
+
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
 MEDIA_URL = "/media/"
+
 MEDIA_ROOT = BASE_DIR / "media"
 
 
@@ -179,7 +224,7 @@ EMAIL_HOST = os.getenv(
 )
 
 EMAIL_PORT = int(
-    os.getenv("EMAIL_PORT", 587)
+    os.getenv("EMAIL_PORT", "587")
 )
 
 EMAIL_USE_TLS = os.getenv(
@@ -216,10 +261,12 @@ GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
 # =====================================================
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-    "http://localhost:5174",
-    "http://127.0.0.1:5174",
+    origin.strip()
+    for origin in os.getenv(
+        "CORS_ALLOWED_ORIGINS",
+        "http://localhost:5173,http://127.0.0.1:5173"
+    ).split(",")
+    if origin.strip()
 ]
 
 
@@ -228,15 +275,29 @@ CORS_ALLOWED_ORIGINS = [
 # =====================================================
 
 CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-    "http://localhost:5174",
-    "http://127.0.0.1:5174",
+    origin.strip()
+    for origin in os.getenv(
+        "CSRF_TRUSTED_ORIGINS",
+        "http://localhost:5173,http://127.0.0.1:5173"
+    ).split(",")
+    if origin.strip()
 ]
+
 
 # =====================================================
 # GEMINI AI CONFIGURATION
 # =====================================================
 
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
-GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.8-flash")
+
+GEMINI_MODEL = os.getenv(
+    "GEMINI_MODEL",
+    "gemini-3.8-flash"
+)
+
+
+# =====================================================
+# DEFAULT PRIMARY KEY
+# =====================================================
+
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"

@@ -5,3 +5,4 @@ __pycache__/
 *.log
 mongo-template/
 temp_mongo/
+staticfiles/
