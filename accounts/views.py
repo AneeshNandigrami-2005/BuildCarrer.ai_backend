@@ -83,49 +83,52 @@ def build_auth_user_payload(request, user):
 # REGISTER
 # =====================================================
 
+
+# =====================================================
+# REGISTER
+# =====================================================
+
 class RegisterView(APIView):
+
+    authentication_classes = []
+    permission_classes = []
 
     def post(self, request):
 
+        logging.info("REGISTRATION: Request received")
+
         serializer = RegisterSerializer(data=request.data)
+
+        logging.info("REGISTRATION: Validating serializer")
 
         if serializer.is_valid():
 
+            logging.info("REGISTRATION: Serializer valid, creating user")
+
             user = serializer.save()
 
-            send_mail(
-                subject="Welcome to BuildCareer.ai ðŸŽ‰",
-
-                message=f"""
-Hello {user.full_name},
-
-Welcome to BuildCareer.ai!
-
-Your account has been successfully created.
-
-Account Type:
-{user.get_user_type_display()}
-
-We are excited to have you with us.
-
-Best regards,
-BuildCareer.ai Team
-""",
-
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=[user.email],
-                fail_silently=True,
+            logging.info(
+                "REGISTRATION: User created successfully: %s",
+                user.email
             )
+
+            # Temporarily disabled Gmail SMTP.
+            # Test registration without sending email.
 
             return Response(
                 {
                     "success": True,
                     "message": "Registration successful.",
-
+                    "email_notification": "Temporarily disabled",
                     "user": build_auth_user_payload(request, user),
                 },
                 status=status.HTTP_201_CREATED,
             )
+
+        logging.warning(
+            "REGISTRATION VALIDATION FAILED: %s",
+            serializer.errors
+        )
 
         return Response(
             {
@@ -135,8 +138,6 @@ BuildCareer.ai Team
             },
             status=status.HTTP_400_BAD_REQUEST,
         )
-
-
 # =====================================================
 # LOGIN
 # =====================================================

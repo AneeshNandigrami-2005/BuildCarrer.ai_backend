@@ -238,7 +238,7 @@ EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER or "BuildCareer.ai"
 
-
+EMAIL_TIMEOUT = 10
 # =====================================================
 # FRONTEND URL
 # =====================================================
